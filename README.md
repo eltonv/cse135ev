@@ -1,17 +1,13 @@
 Team Members:
 Elton Villalta
+
+
 The password for user "grader" on your Apache server:
 grader@209.38.73.106
 Password4TA
 
 https://cse135ev.site/
-has:
-homepage with team member info and homework links
-about pages for each team member
-favicon
-robots.txt
-hw1/hello.php
-hw1/report.html
+
 
 Details of Github auto deploy setup:
 From my server I created a post-recieve executable hook in my 

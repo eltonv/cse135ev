@@ -19,16 +19,22 @@ local repo which just logged the commits to git-log.
 Now I am able to see when something is committed and when something is deployed.
 
 Username/password info for logging into the site:
+
 root@209.38.73.106
 CSE153summer
 
 
 
 Summary of changes to HTML file in DevTools after compression
+
 After I compressed my files with gzip I noticed the file size of my html shrink from 402 to 301 bytes.
 
+
 Summary of removing 'server' header
+
 For this I installed mod_security onto my server and added these two lines to my apache2.conf file
+
+
 
 ServerTokens Full
 SecServerSignature "CSE135 Server"

@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analytics Dashboard</title>
+  <script src="https://cdn.zinggrid.com/zinggrid.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    h2 {
+      margin-top: 50px;
+      margin-bottom: 20px;
+      color: #444;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    
+    .grid-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    zing-grid {
+      width: 100%;
+      min-height: 500px; 
+      height: auto; 
+      display: block;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    
+    
+    .section {
+      margin-bottom: 60px;
+      clear: both;
+    }
+    
+    
+    zing-grid {
+      --zg-head-background: #007bff;
+      --zg-head-color: white;
+      --zg-row-background-even: #f8f9fa;
+      --zg-border-color: #dee2e6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Analytics Dashboard</h1>
+  
+  <div class="section">
+    <h2>Static Data</h2>
+    <div class="grid-container">
+      <zing-grid editor="modal" sort filter pager page-size="10">
+        <zg-data src="/api/static"></zg-data>
+        <zg-column index="sessionId" header="Session ID"></zg-column>
+        <zg-column index="userAgent" header="User Agent"></zg-column>
+        <zg-column index="language" header="Language"></zg-column>
+        <zg-column index="cookiesEnabled" header="Cookies Enabled"></zg-column>
+        <zg-column index="jsEnabled" header="JS Enabled"></zg-column>
+        <zg-column index="imagesEnabled" header="Images Enabled"></zg-column>
+        <zg-column index="cssEnabled" header="CSS Enabled"></zg-column>
+        <zg-column index="screenWidth" header="Screen W"></zg-column>
+        <zg-column index="screenHeight" header="Screen H"></zg-column>
+        <zg-column index="windowWidth" header="Window W"></zg-column>
+        <zg-column index="windowHeight" header="Window H"></zg-column>
+        <zg-column index="connectionType" header="Connection"></zg-column>
+        <zg-column index="pageUrl" header="Page URL"></zg-column>
+<zg-column index="referrer" header="Referring URL" ></zg-column>
+        <zg-column index="timestamp" header="Timestamp"></zg-column>
+        <zg-column index="touchSupport" header="Touch Support"></zg-column>
+        <zg-column index="maxTouchPoints" header="Max Touch Points"></zg-column>
+        <zg-column index="touchDevice" header="Touch Device"></zg-column>
+        <zg-column index="dataType" header="Data Type"></zg-column>
+        <zg-column index="timestamp" header="Timestamp"></zg-column>
+      </zing-grid>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Performance Data</h2>
+    <div class="grid-container">
+      <zing-grid editor="modal" sort filter pager page-size="10">
+        <zg-data src="/api/performance"></zg-data>
+        <zg-column index="sessionId" header="Session ID"></zg-column>
+        <zg-column index="loadStart" header="Load Start"></zg-column>
+        <zg-column index="loadEnd" header="Load End"></zg-column>
+        <zg-column index="totalLoadTime" header="Total Load Time (ms)"></zg-column>
+        <zg-column index="timestamp" header="Timestamp"></zg-column>
+      </zing-grid>
+    </div>
+  </div>
+  
+  <div class="section">
+    <h2>Activity Data</h2>
+    <div class="grid-container">
+      <zing-grid editor="modal" sort filter pager page-size="15">
+        <zg-data src="/api/activity"></zg-data>
+        <zg-column index="sessionId" header="Session ID"></zg-column>
+        <zg-column index="type" header="Activity Type"></zg-column>
+        <zg-column index="x" header="X Coord"></zg-column>
+        <zg-column index="y" header="Y Coord"></zg-column>
+        <zg-column index="button" header="Mouse Button"></zg-column>
+        <zg-column index="key" header="Key Pressed"></zg-column>
+        <zg-column index="scrollX" header="Scroll X"></zg-column>
+        <zg-column index="scrollY" header="Scroll Y"></zg-column>
+        <zg-column index="idleDuration" header="Idle Duration (ms)"></zg-column>
+        <zg-column index="timeOnPage" header="Time on Page (ms)"></zg-column>
+        <zg-column index="pageUrl" header="Page URL"></zg-column>
+      <zg-column index="clickCount" header="Click Count"></zg-column>
+      <zg-column index="element" header="Target Element"></zg-column>
+      <zg-column index="consecutiveClicks" header="Consecutive Clicks"></zg-column>
+      <zg-column index="timestamp" header="Timestamp"></zg-column>     
+ </zing-grid>
+    </div>
+  </div>
+
+<div class="section">
+  <h2>Reading Behavior Data</h2>
+  <div class="grid-container">
+    <zing-grid editor="modal" sort filter pager page-size="15">
+      <zg-data src="/api/reading_behavior"></zg-data>
+      <zg-column index="sessionId" header="Session ID"></zg-column>
+      <zg-column index="pageUrl" header="Page URL"></zg-column>
+      <zg-column index="maxScrollDepth" header="Max Scroll Depth (%)"></zg-column>
+      <zg-column index="estimatedReadingTime" header="Reading Time (s)"></zg-column>
+      <zg-column index="timestamp" header="Timestamp"></zg-column>    
+  </zing-grid>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Reading Summary Data</h2>
+  <div class="grid-container">
+    <zing-grid editor="modal" sort filter pager page-size="15">
+      <zg-data src="/api/reading_summary"></zg-data>
+      <zg-column index="sessionId" header="Session ID"></zg-column>
+      <zg-column index="pageUrl" header="Page URL"></zg-column>
+<zg-column index="referrer" header="Referring URL" ></zg-column>
+      <zg-column index="finalScrollDepth" header="Final Scroll Depth (%)"></zg-column>
+      <zg-column index="totalReadingTime" header="Total Reading Time (s)"></zg-column>
+      <zg-column index="timeOnPage" header="Time on Page (s)"></zg-column>
+      <zg-column index="readingRatio" header="Reading Ratio (%)"></zg-column>
+      <zg-column index="timestamp" header="Timestamp"></zg-column>
+    </zing-grid>
+  </div>
+</div>
+
+
+</body>
+</html>

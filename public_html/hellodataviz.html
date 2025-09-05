@@ -1,0 +1,203 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analytics Dashboard with Charts</title>
+  <script src="https://cdn.zinggrid.com/zinggrid.min.js"></script>
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: block; /* ensure charts stack vertically */
+  }
+
+  h2 {
+    margin-top: 40px;
+  }
+
+  .chart {
+    width: 100%;
+    min-height: 400px;   /* force space for ZingChart */
+    margin-bottom: 40px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;  /* ZingChart respects parent box */
+    display: block;      /* makes sure each chart is on its own row */
+  }
+
+  zing-grid {
+    margin-bottom: 40px;
+    width: 100%;
+    height: 400px;
+    display: block;
+    clear: both;     
+  }
+</style>
+
+
+
+</head>
+<body>
+  <h1>Data Viz!</h1>
+  
+  
+  <div id="lineChart" class="chart"></div>
+  
+  
+  <div id="barChart" class="chart"></div>
+  
+  <h2>Browser </h2>
+  <div id="pieChart" class="chart"></div>
+  
+
+<script>
+
+async function loadData() {
+  try {
+    const [staticData, performanceData, activityData] = await Promise.all([
+      fetch('https://cse135ev.site/api/static').then(r => r.json()),
+      fetch('https://cse135ev.site/api/performance').then(r => r.json()),
+      fetch('https://cse135ev.site/api/activity').then(r => r.json())
+    ]);
+
+    createLineChart(performanceData);
+    createBarChart(activityData);
+    createPieChart(staticData);
+  } catch (error) {
+    console.error('Error loading data:', error);
+    createSampleCharts();
+  }
+}
+
+function createLineChart(data) {
+  const recent = data.slice(-20); 
+  const labels = recent.map(d => d.timestamp || 'Unknown');
+  const totalLoad = recent.map(d => d.totalLoadTime);
+
+  
+  const rolling = totalLoad.map((_, i, arr) => {
+    const start = Math.max(0, i - 2);
+    const window = arr.slice(start, i + 1);
+    return Math.round(window.reduce((a, b) => a + b, 0) / window.length);
+  });
+
+  // Cumulative 
+  const cumulative = totalLoad.map((_, i, arr) => {
+    const subset = arr.slice(0, i + 1);
+    return Math.round(subset.reduce((a, b) => a + b, 0) / subset.length);
+  });
+
+  zingchart.render({
+    id: 'lineChart',
+      height: '100%',
+  width: '100%',
+    data: {
+      type: 'line',
+      title: { text: 'Load Times (Rolling,Culmative,Total' },
+	legend: {},       
+scaleX: { values: labels, label: { text: 'Time' } },
+      series: [
+        {
+          values: totalLoad,
+          text: 'Raw Load Time (ms)',
+          lineColor: '#007bff',
+          marker: { backgroundColor: '#007bff' }
+        },
+        {
+          values: rolling,
+          text: 'Rolling Avg (3 pts)',
+          lineColor: '#28a745',
+          marker: { backgroundColor: '#28a745' }
+        },
+        {
+          values: cumulative,
+          text: 'Cumulative Avg',
+          lineColor: '#dc3545',
+          marker: { backgroundColor: '#dc3545' }
+        }
+      ]
+    }
+  });
+}
+function createBarChart(data) {
+  
+  const counts = {};
+  data.forEach(d => {
+    counts[d.type] = (counts[d.type] || 0) + 1;
+  });
+  
+  
+  const types = Object.keys(counts).slice(0, 5);
+  const values = types.map(t => counts[t]);
+  
+  
+  const idleData = data.filter(d => d.type === 'idle' && d.idleDuration);
+  const avgIdleTime = idleData.length > 0 ? 
+    idleData.reduce((sum, d) => sum + d.idleDuration, 0) / idleData.length / 1000 : 0;
+
+  zingchart.render({
+    id: 'barChart',  height: '100%',
+  width: '100%',
+    data: {
+      type: 'bar',
+      title: { text: 'Activity Type vs Avg Idle Time' },
+legend: {}, 
+      scaleX: { values: types },
+      series: [
+        {
+          values: values,
+          text: 'Activity Count',
+          backgroundColor: '#007bff'
+        },
+        {
+          values: types.map(() => Math.round(avgIdleTime)),
+          text: 'Avg Idle Time (sec)',
+          backgroundColor: '#28a745'
+        }
+      ]
+    }
+  });
+}
+
+function createPieChart(data) {
+  // Extract browser info from user agents
+  const browsers = {};
+  data.forEach(d => {
+    let browser = 'Other';
+    if (d.userAgent) {
+      if (d.userAgent.includes('Chrome')) browser = 'Chrome';
+      else if (d.userAgent.includes('Firefox')) browser = 'Firefox'; 
+      else if (d.userAgent.includes('Safari') && !d.userAgent.includes('Chrome')) browser = 'Safari';
+      else if (d.userAgent.includes('Edge')) browser = 'Edge';
+    }
+    browsers[browser] = (browsers[browser] || 0) + 1;
+  });
+
+  const series = Object.entries(browsers).map(([name, count]) => ({
+    values: [count], 
+    text: name
+  }));
+
+  zingchart.render({
+    id: 'pieChart',   height: '100%',
+  width: '100%',
+    data: {
+      type: 'pie',
+      title: { text: 'Browser Distribution' },
+legend: {},       
+series: series,
+      plot: {
+        valueBox: {
+          text: '%t: %v sessions',
+          fontSize: 12
+        }
+      }
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
